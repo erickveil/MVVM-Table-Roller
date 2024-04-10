@@ -45,7 +45,7 @@ fun DungeonGeneratorScreen() {
                         .heightIn(min = 200.dp),
                     shape = RoundedCornerShape(8.dp),
                     // Lighter shade for the text background
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.1f)
+                    color = MaterialTheme.colorScheme.surface.copy(red = 0.5f, blue = 0.2f, alpha = 0.3f)
                 ) {
                     Text(
                         text = "Roll Table Result",
@@ -63,7 +63,7 @@ fun DungeonGeneratorScreen() {
                         .fillMaxWidth()
                         .padding(16.dp),
                     shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                 ) {
                     Text("Generate Dungeon Loot")
                 }
