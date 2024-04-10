@@ -1,5 +1,6 @@
 package net.erickveil.mvvmtableroller.view
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +19,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import net.erickveil.mvvmtableroller.model.DungeonLootRepository
+import net.erickveil.mvvmtableroller.viewmodel.DungeonViewModel
+import net.erickveil.mvvmtableroller.viewmodel.DungeonViewModelFactory
 
 @Composable
-fun DungeonGeneratorScreen() {
+fun DungeonGeneratorScreen(context: Context) {
+
+    val repository = DungeonLootRepository(context)
+    val viewModel: DungeonViewModel = viewModel(factory = DungeonViewModelFactory(repository))
+
+    // Collecting the StateFlow as a state
+    val dungeonContent = viewModel.dungeonContent.collectAsState()
 
     // Using MaterialTheme for light and dark themes support
     MaterialTheme (
@@ -48,7 +60,7 @@ fun DungeonGeneratorScreen() {
                     color = MaterialTheme.colorScheme.surface.copy(red = 0.5f, blue = 0.2f, alpha = 0.3f)
                 ) {
                     Text(
-                        text = "Roll Table Result",
+                        text = dungeonContent.value,
                         modifier = Modifier.padding(16.dp),
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -57,8 +69,8 @@ fun DungeonGeneratorScreen() {
                 // Button with Rounded Corners
                 Button(
                     onClick = {
-                              /* Action to generate dungeon content */
-                              },
+                              viewModel.generateDungeonLoot()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),

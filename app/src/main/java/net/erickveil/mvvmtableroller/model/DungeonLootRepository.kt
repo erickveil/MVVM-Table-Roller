@@ -1,19 +1,32 @@
 package net.erickveil.mvvmtableroller.model
 
 import android.content.Context
+import android.util.Log
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import java.io.IOException
 
 class DungeonLootRepository(private val context: Context) {
-    private val json = Json { ignoreUnknownKeys = true }
 
-    fun loadDungeonLootTable(): DungeonLootTable? {
+    fun getLootTable(): DungeonLootTable? {
+        val jsonString = loadDungeonLootTable()
+        return jsonString?.let { parseJsonToLootTable(it) }
+    }
+    private fun loadDungeonLootTable(): String? {
         return try {
-            context.assets.open("dungeon_loot_table.json").use { inputStream ->
-                val jsonStr = inputStream.bufferedReader().use { it.readText() }
-                json.decodeFromString<DungeonLootTable>(jsonStr)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            context.assets.open("lootTable.json").bufferedReader().use { it.readText() }
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+            null
+        }
+    }
+
+    private fun parseJsonToLootTable(jsonString: String): DungeonLootTable? {
+        return try {
+            Json.decodeFromString(serializer(), jsonString)
+        } catch (exception: SerializationException) {
+            exception.printStackTrace()
             null
         }
     }
